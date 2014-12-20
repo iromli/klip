@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"errors"
 	"io/ioutil"
 	"os"
 	"os/user"
@@ -15,7 +14,8 @@ type JSONStorage struct {
 	Filepath string
 }
 
-func (s *JSONStorage) getJSON() (*simplejson.Json, error) {
+// readFromFile loads JSON from a file.
+func (s *JSONStorage) readFromFile() (*simplejson.Json, error) {
 	buf, err := ioutil.ReadFile(s.Filepath)
 	if err != nil {
 		return nil, err
@@ -29,9 +29,21 @@ func (s *JSONStorage) getJSON() (*simplejson.Json, error) {
 	return j, nil
 }
 
+// writeToFile dumps JSON into a file.
+func (s *JSONStorage) writeToFile(j *simplejson.Json) error {
+	out, err := j.Encode()
+	if err != nil {
+		return err
+	}
+	if err := ioutil.WriteFile(s.Filepath, out, 0644); err != nil {
+		return err
+	}
+	return nil
+}
+
 // Put creates or updates a list or list item.
 func (s *JSONStorage) Put(list, name, value string) error {
-	j, err := s.getJSON()
+	j, err := s.readFromFile()
 	if err != nil {
 		return err
 	}
@@ -41,16 +53,12 @@ func (s *JSONStorage) Put(list, name, value string) error {
 		j.SetPath([]string{list}, make(map[string]string, 0))
 	}
 
+	// sets nested item
 	if name != "" && value != "" {
 		j.SetPath([]string{list, name}, value)
 	}
 
-	out, err := j.Encode()
-	if err != nil {
-		return err
-	}
-
-	if err := ioutil.WriteFile(s.Filepath, out, 0644); err != nil {
+	if err := s.writeToFile(j); err != nil {
 		return err
 	}
 	return nil
@@ -60,32 +68,32 @@ func (s *JSONStorage) Put(list, name, value string) error {
 func (s *JSONStorage) Get(list, name string) (string, error) {
 	var result string
 
-	j, err := s.getJSON()
+	j, err := s.readFromFile()
 	if err != nil {
 		return result, err
 	}
 
 	r, ok := j.Get(list).CheckGet(name)
 	if !ok {
-		return result, errors.New("item not found")
+		return result, ErrMissingItem
 	}
 
 	result = r.MustString()
 	return result, nil
 }
 
-// List retrieves all values from a list.
-func (s *JSONStorage) List(list string) (map[string]interface{}, error) {
+// Map retrieves all values from a list.
+func (s *JSONStorage) Map(list string) (map[string]interface{}, error) {
 	var result map[string]interface{}
 
-	j, err := s.getJSON()
+	j, err := s.readFromFile()
 	if err != nil {
 		return result, err
 	}
 
 	_, ok := j.CheckGet(list)
 	if !ok {
-		return result, errors.New("list not found")
+		return result, ErrMissingList
 	}
 
 	result = j.GetPath(list).MustMap()
@@ -94,6 +102,26 @@ func (s *JSONStorage) List(list string) (map[string]interface{}, error) {
 
 // Delete removes list or list item if `name` is an empty string.
 func (s *JSONStorage) Delete(list, name string) error {
+	j, err := s.readFromFile()
+	if err != nil {
+		return err
+	}
+
+	if name != "" {
+		if _, ok := j.GetPath(list).CheckGet(name); !ok {
+			return ErrMissingItem
+		}
+		j.GetPath(list).Del(name)
+	} else {
+		if _, ok := j.CheckGet(list); !ok {
+			return ErrMissingList
+		}
+		j.Del(list)
+	}
+
+	if err := s.writeToFile(j); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -108,6 +136,7 @@ func NewJSONStorage() (*JSONStorage, error) {
 
 	filepath := path.Join(u.HomeDir, ".clip")
 
+	// creates file if not exists
 	if _, err := os.Stat(filepath); err != nil {
 		f, err := os.Create(filepath)
 		if err != nil {

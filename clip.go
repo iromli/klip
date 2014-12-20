@@ -25,6 +25,7 @@ Usage:
 
 `
 	args, _ := docopt.Parse(usage, nil, true, "Clip 0.1", false)
+
 	list := interfaceToString(args["<list>"])
 	name := interfaceToString(args["<name>"])
 	value := interfaceToString(args["<value>"])
@@ -39,19 +40,19 @@ Usage:
 		if err := s.Put(list, name, value); err != nil {
 			log.Fatal(err)
 		}
-	case args["get"]:
-		if name != "" {
-			result, err := s.Get(list, name)
-			if err != nil {
-				log.Fatal(err)
-			}
-			fmt.Println(result)
-		} else {
-			result, err := s.List(list)
-			if err != nil {
-				log.Fatal(err)
-			}
-			fmt.Println(result)
+	case args["get"].(bool) && name != "":
+		result, err := s.Get(list, name)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(result)
+	case args["get"].(bool) && name == "":
+		result, err := s.Map(list)
+		if err != nil {
+			log.Fatal(err)
+		}
+		for k, v := range result {
+			fmt.Printf("%s: %s\n", k, v)
 		}
 	case args["delete"]:
 		if err := s.Delete(list, name); err != nil {
