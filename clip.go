@@ -3,23 +3,29 @@ package main
 import (
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/docopt/docopt-go"
+
 	"github.com/iromli/clip/storage"
 )
 
 func interfaceToString(val interface{}) string {
-	if val != nil {
+	switch val.(type) {
+	case string:
 		return val.(string)
+	case []string:
+		return strings.Join(val.([]string), " ")
+	default:
+		return ""
 	}
-	return ""
 }
 
 func main() {
 	usage := `Clip
 
 Usage:
-  clip put <list> [(<name> <value>)]
+  clip put <list> [(<name> <value>...)]
   clip get <list> [<name>]
   clip delete <list> [<name>]
 
