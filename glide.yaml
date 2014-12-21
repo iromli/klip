@@ -9,3 +9,6 @@ import:
   - package: github.com/bitly/go-simplejson
     ref: 3378bdcb5cebedcbf8b5750edee28010f128fe24
     vcs: git
+  - package: github.com/buger/goterm
+    ref: af3f07dadc88b80c7b5a15f26033c6dd979f012f
+    vcs: git

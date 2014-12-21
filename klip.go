@@ -7,6 +7,7 @@ import (
 	"path"
 	"strings"
 
+	tm "github.com/buger/goterm"
 	"github.com/docopt/docopt-go"
 
 	"github.com/iromli/klip/storage"
@@ -33,6 +34,10 @@ func getFilepath() (string, error) {
 	return filepath, nil
 }
 
+func printErr(err error) {
+	fmt.Println(tm.Color(fmt.Sprintf("[ERR] %s", err), tm.RED))
+}
+
 func main() {
 	usage := `Klip
 
@@ -50,33 +55,33 @@ Usage:
 
 	fp, err := getFilepath()
 	if err != nil {
-		fmt.Printf("[err] %s\n", err)
+		printErr(err)
 		os.Exit(1)
 	}
 
 	s, err := storage.NewJSONStorage(fp)
 	if err != nil {
-		fmt.Printf("[err] %s\n", err)
+		printErr(err)
 		os.Exit(1)
 	}
 
 	switch {
 	case args["put"]:
 		if err := s.Put(list, name, value); err != nil {
-			fmt.Printf("[err] %s\n", err)
+			printErr(err)
 			os.Exit(1)
 		}
 	case args["get"].(bool) && name != "":
 		result, err := s.Get(list, name)
 		if err != nil {
-			fmt.Printf("[err] %s\n", err)
+			printErr(err)
 			os.Exit(1)
 		}
 		fmt.Println(result)
 	case args["get"].(bool) && name == "":
 		result, err := s.Map(list)
 		if err != nil {
-			fmt.Printf("[err] %s\n", err)
+			printErr(err)
 			os.Exit(1)
 		}
 		for k, v := range result {
@@ -84,7 +89,7 @@ Usage:
 		}
 	case args["delete"]:
 		if err := s.Delete(list, name); err != nil {
-			fmt.Printf("[err] %s\n", err)
+			printErr(err)
 			os.Exit(1)
 		}
 	}
