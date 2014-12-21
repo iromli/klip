@@ -10,21 +10,21 @@ Text snippets on the command line!
 
 Usage:
 
-    klip add <list>
+    klip put <list>
 
 Example:
 
-    klip add mylist
+    klip put mylist
 
 ### Create an item
 
 Usage:
 
-    klip add <list> <item> <value>
+    klip put <list> <item> <value>
 
 Example:
 
-    klip add mylist myitem content goes here
+    klip put mylist myitem content goes here
 
 ### Get a list
 
