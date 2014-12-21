@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"os"
 	"os/user"
 	"path"
 	"strings"
@@ -50,36 +50,42 @@ Usage:
 
 	fp, err := getFilepath()
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("[err] %s\n", err)
+		os.Exit(1)
 	}
 
 	s, err := storage.NewJSONStorage(fp)
 	if err != nil {
-		log.Fatal(err)
+		fmt.Printf("[err] %s\n", err)
+		os.Exit(1)
 	}
 
 	switch {
 	case args["put"]:
 		if err := s.Put(list, name, value); err != nil {
-			log.Fatal(err)
+			fmt.Printf("[err] %s\n", err)
+			os.Exit(1)
 		}
 	case args["get"].(bool) && name != "":
 		result, err := s.Get(list, name)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("[err] %s\n", err)
+			os.Exit(1)
 		}
 		fmt.Println(result)
 	case args["get"].(bool) && name == "":
 		result, err := s.Map(list)
 		if err != nil {
-			log.Fatal(err)
+			fmt.Printf("[err] %s\n", err)
+			os.Exit(1)
 		}
 		for k, v := range result {
-			fmt.Printf("%s: %s\n", k, v)
+			fmt.Printf("%s %s\n", k, v)
 		}
 	case args["delete"]:
 		if err := s.Delete(list, name); err != nil {
-			log.Fatal(err)
+			fmt.Printf("[err] %s\n", err)
+			os.Exit(1)
 		}
 	}
 }
