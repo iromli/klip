@@ -9,7 +9,7 @@ import (
 
 	"github.com/docopt/docopt-go"
 
-	"github.com/iromli/clip/storage"
+	"github.com/iromli/klip/storage"
 )
 
 func interfaceToString(val interface{}) string {
@@ -29,20 +29,20 @@ func getFilepath() (string, error) {
 		return "", err
 	}
 
-	filepath := path.Join(u.HomeDir, ".clip")
+	filepath := path.Join(u.HomeDir, ".klip")
 	return filepath, nil
 }
 
 func main() {
-	usage := `Clip
+	usage := `Klip
 
 Usage:
-  clip put <list> [(<name> <value>...)]
-  clip get <list> [<name>]
-  clip delete <list> [<name>]
+  klip put <list> [(<name> <value>...)]
+  klip get <list> [<name>]
+  klip delete <list> [<name>]
 
 `
-	args, _ := docopt.Parse(usage, nil, true, "Clip 0.1", false)
+	args, _ := docopt.Parse(usage, nil, true, "Klip 0.1", false)
 
 	list := interfaceToString(args["<list>"])
 	name := interfaceToString(args["<name>"])

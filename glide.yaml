@@ -1,5 +1,5 @@
 # Glide YAML configuration file
-package: github.com/iromli/clip
+package: github.com/iromli/klip
 
 # Declare your project's dependencies.
 import:
