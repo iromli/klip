@@ -3,8 +3,6 @@ package storage
 import (
 	"io/ioutil"
 	"os"
-	"os/user"
-	"path"
 
 	"github.com/bitly/go-simplejson"
 )
@@ -42,7 +40,7 @@ func (s *JSONStorage) writeToFile(j *simplejson.Json) error {
 }
 
 // Put creates or updates a list or list item.
-func (s *JSONStorage) Put(list, name, value string) error {
+func (s *JSONStorage) Put(list, name string, value interface{}) error {
 	j, err := s.readFromFile()
 	if err != nil {
 		return err
@@ -126,16 +124,8 @@ func (s *JSONStorage) Delete(list, name string) error {
 }
 
 // NewJSONStorage creates a JSON file to store all clips.
-// This file is located under current user's home directory, e.g. `/home/user/.clip`.
 // If file is not exists, it will be created.
-func NewJSONStorage() (*JSONStorage, error) {
-	u, err := user.Current()
-	if err != nil {
-		return nil, err
-	}
-
-	filepath := path.Join(u.HomeDir, ".clip")
-
+func NewJSONStorage(filepath string) (*JSONStorage, error) {
 	// creates file if not exists
 	if _, err := os.Stat(filepath); err != nil {
 		f, err := os.Create(filepath)

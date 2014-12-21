@@ -12,7 +12,7 @@ var (
 
 // Manager is an interface for a storage.
 type Manager interface {
-	Put(list, name, value string) error
+	Put(list, name string, value interface{}) error
 	Get(list, name string) (string, error)
 	Map(list string) (map[string]interface{}, error)
 	Delete(list, name string) error

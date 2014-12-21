@@ -3,6 +3,8 @@ package main
 import (
 	"fmt"
 	"log"
+	"os/user"
+	"path"
 	"strings"
 
 	"github.com/docopt/docopt-go"
@@ -21,6 +23,16 @@ func interfaceToString(val interface{}) string {
 	}
 }
 
+func getFilepath() (string, error) {
+	u, err := user.Current()
+	if err != nil {
+		return "", err
+	}
+
+	filepath := path.Join(u.HomeDir, ".clip")
+	return filepath, nil
+}
+
 func main() {
 	usage := `Clip
 
@@ -36,7 +48,12 @@ Usage:
 	name := interfaceToString(args["<name>"])
 	value := interfaceToString(args["<value>"])
 
-	s, err := storage.NewJSONStorage()
+	fp, err := getFilepath()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	s, err := storage.NewJSONStorage(fp)
 	if err != nil {
 		log.Fatal(err)
 	}
