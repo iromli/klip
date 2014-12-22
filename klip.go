@@ -84,8 +84,9 @@ Usage:
 			printErr(err)
 			os.Exit(1)
 		}
+		fmt.Println(tm.Color(fmt.Sprintf("%s (%d)", list, len(result)), tm.GREEN))
 		for k, v := range result {
-			fmt.Printf("%s %s\n", k, v)
+			fmt.Printf("  %s: %s\n", tm.Bold(k), v)
 		}
 	case args["delete"]:
 		if err := s.Delete(list, name); err != nil {
