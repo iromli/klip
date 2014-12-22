@@ -2,11 +2,11 @@
 
 [![license](http://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/iromli/klip/blob/master/LICENSE)
 
-Text snippets on the command line!
+Text snippets on the command line! Inspired by [boom](https://github.com/holman/boom) and [clip](https://github.com/silent1mezzo/clip). Tested on Ubuntu.
 
 ## Crash Course
 
-### Create an empty list
+### Create a list
 
 Usage:
 
@@ -16,7 +16,7 @@ Example:
 
     klip put mylist
 
-### Create an item
+### Create a list item
 
 Usage:
 
@@ -65,3 +65,9 @@ Usage:
 Example:
 
     klip delete mylist myitem
+
+## Tips & Tricks
+
+1. Copy a list item to clipboard: `klip get links mylink | xsel -b`.
+2. Open a browser with URL from a list item: `klip get links mylink | xargs xdg-open`.
+3. Pipe to a pager: `klip get links | less -r`.
