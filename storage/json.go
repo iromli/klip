@@ -1,7 +1,6 @@
 package storage
 
 import (
-	"io/ioutil"
 	"os"
 
 	"github.com/bitly/go-simplejson"
@@ -14,12 +13,13 @@ type JSONStorage struct {
 
 // readFromFile loads JSON from a file.
 func (s *JSONStorage) readFromFile() (*simplejson.Json, error) {
-	buf, err := ioutil.ReadFile(s.Filepath)
+	f, err := os.Open(s.Filepath)
 	if err != nil {
 		return nil, err
 	}
+	defer f.Close()
 
-	j, err := simplejson.NewJson(buf)
+	j, err := simplejson.NewFromReader(f)
 	if err != nil {
 		return nil, err
 	}
@@ -33,9 +33,18 @@ func (s *JSONStorage) writeToFile(j *simplejson.Json) error {
 	if err != nil {
 		return err
 	}
-	if err := ioutil.WriteFile(s.Filepath, out, 0644); err != nil {
+
+	f, err := os.Create(s.Filepath)
+	if err != nil {
 		return err
 	}
+	defer f.Close()
+
+	if _, err := f.Write(out); err != nil {
+		return err
+	}
+	f.Sync()
+
 	return nil
 }
 
@@ -137,6 +146,7 @@ func NewJSONStorage(filepath string) (*JSONStorage, error) {
 		if _, err := f.WriteString("{}"); err != nil {
 			return nil, err
 		}
+		f.Sync()
 	}
 
 	s := JSONStorage{Filepath: filepath}
