@@ -1,19 +1,19 @@
 package storage
 
 import (
-	"os"
-
 	"github.com/bitly/go-simplejson"
+	"github.com/spf13/afero"
 )
 
 // JSONStorage represents a JSON-based storage
 type JSONStorage struct {
 	Filepath string
+	Fs       afero.Fs
 }
 
 // readFromFile loads JSON from a file.
 func (s *JSONStorage) readFromFile() (*simplejson.Json, error) {
-	f, err := os.Open(s.Filepath)
+	f, err := s.Fs.Open(s.Filepath)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (s *JSONStorage) writeToFile(j *simplejson.Json) error {
 		return err
 	}
 
-	f, err := os.Create(s.Filepath)
+	f, err := s.Fs.Create(s.Filepath)
 	if err != nil {
 		return err
 	}
@@ -43,7 +43,6 @@ func (s *JSONStorage) writeToFile(j *simplejson.Json) error {
 	if _, err := f.Write(out); err != nil {
 		return err
 	}
-	f.Sync()
 
 	return nil
 }
@@ -134,10 +133,14 @@ func (s *JSONStorage) Delete(list, name string) error {
 
 // NewJSONStorage creates a JSON file to store all clips.
 // If file is not exists, it will be created.
-func NewJSONStorage(filepath string) (*JSONStorage, error) {
+func NewJSONStorage(filepath string, fs afero.Fs) (*JSONStorage, error) {
+	s := JSONStorage{
+		Filepath: filepath,
+		Fs:       fs,
+	}
 	// creates file if not exists
-	if _, err := os.Stat(filepath); err != nil {
-		f, err := os.Create(filepath)
+	if _, err := s.Fs.Stat(filepath); err != nil {
+		f, err := s.Fs.Create(filepath)
 		if err != nil {
 			return nil, err
 		}
@@ -146,9 +149,7 @@ func NewJSONStorage(filepath string) (*JSONStorage, error) {
 		if _, err := f.WriteString("{}"); err != nil {
 			return nil, err
 		}
-		f.Sync()
 	}
 
-	s := JSONStorage{Filepath: filepath}
 	return &s, nil
 }

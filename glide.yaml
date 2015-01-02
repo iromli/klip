@@ -12,3 +12,6 @@ import:
   - package: github.com/buger/goterm
     ref: af3f07dadc88b80c7b5a15f26033c6dd979f012f
     vcs: git
+  - package: github.com/spf13/afero
+    ref: 3effba0913b271b9284639653ba1e247cbddca64
+    vcs: git

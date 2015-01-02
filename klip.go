@@ -9,6 +9,7 @@ import (
 
 	tm "github.com/buger/goterm"
 	"github.com/docopt/docopt-go"
+	"github.com/spf13/afero"
 
 	"github.com/iromli/klip/storage"
 )
@@ -59,7 +60,7 @@ Usage:
 		os.Exit(1)
 	}
 
-	s, err := storage.NewJSONStorage(fp)
+	s, err := storage.NewJSONStorage(fp, afero.OsFs{})
 	if err != nil {
 		printErr(err)
 		os.Exit(1)
