@@ -1,6 +1,7 @@
 # klip
 
 [![license](http://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/iromli/klip/blob/master/LICENSE)
+[![Codeship Status](https://img.shields.io/codeship/17858620-82a6-0132-4836-72ed2dde02fa.svg?style=flat-square&label=codeship)](https://codeship.com/projects/57913)
 
 Text snippets on the command line! Inspired by [boom](https://github.com/holman/boom) and [clip](https://github.com/silent1mezzo/clip). Tested on Ubuntu.
 
