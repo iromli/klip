@@ -1,0 +1,26 @@
+{
+	"ImportPath": "github.com/iromli/klip",
+	"GoVersion": "go1.3.3",
+	"Deps": [
+		{
+			"ImportPath": "github.com/bitly/go-simplejson",
+			"Rev": "3378bdcb5cebedcbf8b5750edee28010f128fe24"
+		},
+		{
+			"ImportPath": "github.com/buger/goterm",
+			"Rev": "af3f07dadc88b80c7b5a15f26033c6dd979f012f"
+		},
+		{
+			"ImportPath": "github.com/docopt/docopt-go",
+			"Rev": "0.6.1"
+		},
+		{
+			"ImportPath": "github.com/spf13/afero",
+			"Rev": "3effba0913b271b9284639653ba1e247cbddca64"
+		},
+		{
+			"ImportPath": "gopkg.in/check.v1",
+			"Rev": "64131543e7896d5bcc6bd5a76287eb75ea96c673"
+		}
+	]
+}

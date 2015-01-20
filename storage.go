@@ -1,8 +1,18 @@
-package storage
+package main
 
 import (
+	"errors"
+
 	"github.com/bitly/go-simplejson"
 	"github.com/spf13/afero"
+)
+
+var (
+	// ErrMissingItem represents error about missing list item
+	ErrMissingItem = errors.New("item not found")
+
+	// ErrMissingList represents error about missing list
+	ErrMissingList = errors.New("list not found")
 )
 
 // JSONStorage represents a JSON-based storage

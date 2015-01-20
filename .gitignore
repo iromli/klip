@@ -24,3 +24,5 @@ _testmain.go
 *.prof
 _vendor
 klip
+Godeps/_workspace
+.coverage.out
